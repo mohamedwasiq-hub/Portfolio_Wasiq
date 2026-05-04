@@ -742,21 +742,23 @@ body::before{
       </div>
     </div>
 <form action="https://formsubmit.co/mwasiqpnk@gmail.com" method="POST">
+  <input type="hidden" name="_captcha" value="false">
     <div class="contact-form rev rev-d2">
-      <div class="fg">
-        <label type="text" name="name">Your Name</label>
-        <input type="text" placeholder="John Smith"/>
+      <div class="fg" >
+        <label>Your Name</label>
+        <input type="text" name="name" placeholder="John Smith" />
       </div>
       <div class="fg">
-        <label type="email" placeholder="john@example.com" name="email">Email Address</label>
-        <input type="email" placeholder="john@example.com"/>
+        <label  >Email Address</label>
+        <input type="email" placeholder="john@example.com" name="email"/>
       </div>
       <div class="fg">
-        <label>Message</label>
+        <label name="message">Message</label>
         <textarea placeholder="Tell me about your project..." name="message" type="text"></textarea>
       </div>
-      <button class="btn-send">Send Message →</button>
+      <button class="btn-send" type="submit">Send Message →</button>
     </div>
+  </input>
 </form>
   </div>
 </section>
