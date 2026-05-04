@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Mohamed Wasiq — Web Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Cabinet+Grotesk:wght@400;500;700;800;900&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080808;
+  --bg2:#111111;
+  --bg3:#0d0d0d;
+  --accent:#ffffff;
+  --accent2:#c0c0c0;
+  --text:#a0a0a0;
+  --text2:#555555;
+  --white:#f0f0f0;
+  --border:rgba(255,255,255,0.07);
+  --border2:rgba(255,255,255,0.18);
+  --card-bg:rgba(14,14,14,0.92);
+  --font-display:'Bebas Neue',sans-serif;
+  --font-body:'Cabinet Grotesk',sans-serif;
+  --font-mono:'DM Mono',monospace;
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* ── CURSOR ── */
+#cur,#cur-ring{position:fixed;pointer-events:none;z-index:9999;border-radius:50%;transform:translate(-50%,-50%)}
+#cur{width:8px;height:8px;background:var(--white);transition:transform .1s,opacity .2s;mix-blend-mode:difference}
+#cur-ring{width:32px;height:32px;border:1px solid rgba(255,255,255,.35);transition:transform .18s ease,width .25s,height .25s,border-color .25s}
+body:hover #cur{opacity:1}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:800;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1.4rem 5vw;
+  transition:background .5s,backdrop-filter .5s,border-color .5s;
+  border-bottom:1px solid transparent;
+}
+nav.glass{
+  background:rgba(8,8,8,.82);
+  backdrop-filter:blur(20px) saturate(1.2);
+  border-color:var(--border);
+}
+.logo{
+  font-family:var(--font-mono);font-size:.9rem;color:var(--white);
+  text-decoration:none;letter-spacing:1px;
+}
+.logo em{color:var(--text2);font-style:normal}
+.nav-links{display:flex;gap:2.5rem;list-style:none;align-items:center}
+.nav-links a{
+  color:var(--text2);text-decoration:none;
+  font-family:var(--font-mono);font-size:.7rem;letter-spacing:3px;text-transform:uppercase;
+  transition:color .3s;position:relative;
+}
+.nav-links a::after{
+  content:'';position:absolute;bottom:-3px;left:0;right:0;height:1px;
+  background:var(--white);transform:scMohamed Wasiq(0);transition:transform .3s;
+}
+.nav-links a:hover{color:var(--white)}
+.nav-links a:hover::after{transform:scMohamed Wasiq(1)}
+.nav-hire{
+  padding:.55rem 1.5rem;border:1px solid rgba(255,255,255,.3);color:var(--white);
+  font-family:var(--font-mono);font-size:.68rem;letter-spacing:2px;text-transform:uppercase;
+  text-decoration:none;border-radius:2px;
+  transition:background .3s,color .3s,box-shadow .3s;
+}
+.nav-hire:hover{background:var(--white);color:var(--bg);box-shadow:0 0 25px rgba(255,255,255,.15)}
+.ham{display:none;flex-direction:column;gap:6px;background:none;border:none;cursor:none;padding:4px}
+.ham span{display:block;width:22px;height:1.5px;background:var(--white);transition:transform .3s,opacity .3s}
+.ham.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.ham.open span:nth-child(2){opacity:0}
+.ham.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+
+/* mobile menu */
+.mob-menu{
+  display:none;position:fixed;inset:0;
+  background:rgba(8,8,8,.98);backdrop-filter:blur(24px);
+  z-index:700;flex-direction:column;align-items:center;justify-content:center;gap:3rem;
+}
+.mob-menu.open{display:flex}
+.mob-menu a{
+  font-family:var(--font-display);font-size:3.5rem;
+  color:var(--white);text-decoration:none;letter-spacing:4px;
+  transition:color .3s,transform .3s;
+}
+.mob-menu a:hover{color:var(--text2);transform:skewX(-4deg)}
+
+/* ── HERO ── */
+#hero{
+  position:relative;min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+}
+#hero-canvas{position:absolute;inset:0;z-index:0}
+
+/* 3D floating shapes */
+.orb{
+  position:absolute;border-radius:50%;pointer-events:none;
+  will-change:transform,filter;
+  animation:drift var(--t) var(--d) ease-in-out infinite;
+}
+@keyframes drift{
+  0%  {transform:translate(0,0) rotate(var(--r0)) scale(1);filter:blur(var(--b0))}
+  25% {transform:translate(var(--x1),var(--y1)) rotate(var(--r1)) scale(var(--s1));filter:blur(var(--b1))}
+  50% {transform:translate(var(--x2),var(--y2)) rotate(var(--r2)) scale(var(--s2));filter:blur(var(--b2))}
+  75% {transform:translate(var(--x3),var(--y3)) rotate(var(--r3)) scale(var(--s3));filter:blur(var(--b3))}
+  100%{transform:translate(0,0) rotate(var(--r0)) scale(1);filter:blur(var(--b0))}
+}
+
+/* 3D wireframe cube via CSS */
+.css-cube{
+  position:absolute;width:var(--sz);height:var(--sz);
+  transform-style:preserve-3d;perspective:600px;
+  animation:spinCube var(--t) var(--d) linear infinite, driftCube var(--dt) var(--dd) ease-in-out infinite;
+  pointer-events:none;
+}
+.css-cube .face{
+  position:absolute;width:100%;height:100%;
+  border:1px solid;background:rgba(255,255,255,.01);
+}
+@keyframes spinCube{from{transform:rotateX(0) rotateY(0) rotateZ(0)}to{transform:rotateX(360deg) rotateY(540deg) rotateZ(180deg)}}
+@keyframes driftCube{
+  0%,100%{margin-top:0;margin-left:0}
+  33%{margin-top:var(--dy);margin-left:var(--dx)}
+  66%{margin-top:calc(var(--dy)*-.6);margin-left:calc(var(--dx)*1.2)}
+}
+
+.hero-center{
+  position:relative;z-index:2;
+  text-align:center;display:flex;flex-direction:column;align-items:center;gap:1.6rem;
+  padding:2rem 1.5rem;
+}
+.hero-tag{
+  font-family:var(--font-mono);font-size:.68rem;letter-spacing:5px;text-transform:uppercase;
+  color:var(--text2);opacity:0;animation:riseUp .8s .3s forwards;
+}
+.hero-h1{
+  font-family:var(--font-display);
+  font-size:clamp(3.5rem,10vw,8rem);
+  line-height:.95;letter-spacing:2px;color:var(--white);
+  opacity:0;animation:riseUp .8s .5s forwards;
+}
+.hero-h1 .c1{color:var(--white)}
+.hero-h1 .c2{color:var(--accent2)}
+.hero-sub{
+  max-width:480px;font-size:1rem;line-height:1.75;
+  color:var(--text2);font-weight:500;
+  opacity:0;animation:riseUp .8s .7s forwards;
+}
+.hero-btns{
+  display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;
+  opacity:0;animation:riseUp .8s .9s forwards;
+}
+.btn-p{
+  padding:.9rem 2.4rem;background:var(--white);color:var(--bg);
+  font-family:var(--font-body);font-weight:800;font-size:.85rem;letter-spacing:.5px;
+  border:none;border-radius:2px;text-decoration:none;
+  transition:box-shadow .3s,transform .2s,background .3s;cursor:none;
+}
+.btn-p:hover{background:var(--accent2);box-shadow:0 0 35px rgba(255,255,255,.12);transform:translateY(-3px)}
+.btn-g{
+  padding:.9rem 2.4rem;border:1px solid rgba(255,255,255,.2);color:var(--text);
+  font-family:var(--font-body);font-weight:700;font-size:.85rem;
+  border-radius:2px;text-decoration:none;
+  transition:border-color .3s,color .3s;cursor:none;
+}
+.btn-g:hover{border-color:rgba(255,255,255,.5);color:var(--white)}
+.scroll-cue{
+  position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:.5rem;
+  opacity:0;animation:fadeIn 1s 1.6s forwards;
+}
+.scroll-cue span{font-family:var(--font-mono);font-size:.6rem;letter-spacing:3px;color:var(--text2);text-transform:uppercase}
+.scroll-line{width:1px;height:50px;background:linear-gradient(to bottom,var(--white),transparent);animation:blink 1.6s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:.2}50%{opacity:1}}
+@keyframes riseUp{from{opacity:0;transform:translateY(35px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{to{opacity:1}}
+
+/* ── SECTIONS SHARED ── */
+section{padding:8rem 6vw}
+.sec-label{font-family:var(--font-mono);font-size:.65rem;letter-spacing:5px;text-transform:uppercase;color:var(--text2);margin-bottom:.6rem}
+.sec-title{
+  font-family:var(--font-display);font-size:clamp(2.5rem,6vw,4.5rem);
+  line-height:1;letter-spacing:2px;color:var(--white);margin-bottom:1rem;
+}
+.sec-title span{color:var(--accent2)}
+.bar{width:40px;height:2px;background:linear-gradient(to right,var(--white),var(--text2));margin-bottom:3.5rem}
+
+/* reveal */
+.rev{opacity:0;transform:translateY(50px);transition:opacity .8s ease,transform .8s ease}
+.rev.in{opacity:1;transform:none}
+.rev-d1{transition-delay:.1s}.rev-d2{transition-delay:.2s}.rev-d3{transition-delay:.3s}.rev-d4{transition-delay:.4s}
+
+/* ── ABOUT ── */
+#about{background:var(--bg2)}
+.about-grid{display:grid;grid-template-columns:1fr 1.5fr;gap:6rem;align-items:center}
+.photo-wrap{position:relative;perspective:900px}
+.photo-card{
+  border:1px solid var(--border2);border-radius:4px;overflow:hidden;
+  transform-style:preserve-3d;transition:transform .12s ease;
+  position:relative;
+}
+.photo-img{
+  width:100%;aspect-ratio:4/5;
+  background:linear-gradient(145deg,#0a1828 0%,#071020 40%,#0c1e38 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:1.2rem;color:var(--text2);position:relative;overflow:hidden;
+}
+.photo-img::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 30%,rgba(255,255,255,.04),transparent 60%);
+}
+.photo-icon{opacity:.25}
+.photo-img p{font-family:var(--font-mono);font-size:.65rem;letter-spacing:3px;text-transform:uppercase}
+.photo-corner{
+  position:absolute;top:-1rem;right:-1rem;
+  width:55px;height:55px;
+  border-top:2px solid var(--white);border-right:2px solid var(--white);
+}
+.photo-badge{
+  position:absolute;bottom:-1rem;left:-1rem;
+  background:var(--white);color:var(--bg);
+  font-family:var(--font-body);font-weight:900;font-size:.75rem;letter-spacing:1px;
+  padding:.7rem 1rem;border-radius:2px;white-space:nowrap;
+}
+
+.about-text{}
+.about-bio{font-size:.95rem;line-height:1.9;color:var(--text2);margin-bottom:2.5rem;font-weight:500}
+.about-bio strong{color:var(--white)}
+.skills-head{font-family:var(--font-mono);font-size:.65rem;letter-spacing:4px;text-transform:uppercase;color:var(--text2);margin-bottom:1.2rem}
+.skills{display:flex;flex-direction:column;gap:1.4rem}
+.skill{}
+.skill-top{display:flex;justify-content:space-between;margin-bottom:.5rem}
+.skill-name{font-family:var(--font-mono);font-size:.72rem;letter-spacing:2px;text-transform:uppercase;color:var(--white)}
+.skill-pct{font-family:var(--font-mono);font-size:.72rem;color:var(--accent2)}
+.skill-track{height:2px;background:rgba(255,255,255,.06);border-radius:1px;overflow:hidden}
+.skill-fill{height:100%;width:0;border-radius:1px;background:linear-gradient(to right,var(--text2),var(--white));transition:width 1.3s cubic-bezier(.25,1,.5,1)}
+
+/* ── PROJECTS ── */
+#projects{background:var(--bg)}
+.proj-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem}
+.proj-card{
+  border:1px solid var(--border);border-radius:4px;overflow:hidden;
+  background:var(--card-bg);
+  transform-style:preserve-3d;perspective:1200px;
+  transition:transform .3s cubic-bezier(.2,.8,.3,1),box-shadow .3s,border-color .3s;
+}
+.proj-card:hover{
+  transform:translateY(-12px) rotateX(4deg) rotateY(-2deg);
+  box-shadow:0 40px 80px rgba(0,0,0,.8),0 0 30px rgba(255,255,255,.04);
+  border-color:var(--border2);
+}
+.proj-thumb{
+  width:100%;height:190px;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.pt1{background:radial-gradient(ellipse at 40% 30%,#1e1e1e,#080808)}
+.pt2{background:radial-gradient(ellipse at 60% 40%,#181818,#080808)}
+.pt3{background:radial-gradient(ellipse at 50% 20%,#1a1a1a,#080808)}
+.proj-icon-wrap{
+  width:72px;height:72px;border-radius:4px;
+  border:1px solid rgba(255,255,255,.2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.8rem;position:relative;
+  animation:projPulse 3s ease-in-out infinite;
+}
+.proj-icon-wrap::before{
+  content:'';position:absolute;inset:-15px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,255,255,.03),transparent);
+}
+@keyframes projPulse{0%,100%{box-shadow:0 0 0 rgba(255,255,255,.1)}50%{box-shadow:0 0 20px rgba(255,255,255,.1)}}
+.proj-body{padding:1.6rem}
+.proj-tag{font-family:var(--font-mono);font-size:.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--text2);margin-bottom:.6rem}
+.proj-title{font-family:var(--font-body);font-weight:900;font-size:1.15rem;color:var(--white);margin-bottom:.7rem}
+.proj-desc{font-size:.82rem;color:var(--text2);line-height:1.75;margin-bottom:1.3rem;font-weight:500}
+.proj-links{display:flex;gap:1.2rem}
+.proj-links a{
+  font-family:var(--font-mono);font-size:.65rem;letter-spacing:2px;text-transform:uppercase;
+  color:var(--accent2);text-decoration:none;display:flex;align-items:center;gap:.4rem;
+  transition:color .3s;
+}
+.proj-links a:hover{color:var(--white)}
+.proj-tech{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem}
+.tech-tag{
+  font-family:var(--font-mono);font-size:.58rem;letter-spacing:1px;
+  padding:.2rem .6rem;border:1px solid rgba(255,255,255,.12);border-radius:2px;color:var(--text2);
+}
+
+/* ── CONTACT ── */
+#contact{background:var(--bg2);position:relative;overflow:hidden}
+.contact-orbs{position:absolute;inset:0;pointer-events:none;z-index:0}
+.contact-wrap{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1.2fr;gap:6rem;align-items:start}
+.contact-info{}
+.contact-info p{font-size:.92rem;color:var(--text2);line-height:1.85;margin-bottom:2rem;font-weight:500}
+.contact-detail{display:flex;flex-direction:column;gap:.8rem;margin-bottom:2rem}
+.detail-row{display:flex;align-items:center;gap:.8rem;font-family:var(--font-mono);font-size:.72rem;color:var(--text2)}
+.detail-row span{color:var(--white)}
+.socials{display:flex;gap:.8rem;flex-wrap:wrap}
+.soc-link{
+  display:flex;align-items:center;gap:.5rem;
+  padding:.55rem 1rem;border:1px solid var(--border);border-radius:2px;
+  color:var(--text2);text-decoration:none;font-family:var(--font-mono);font-size:.65rem;letter-spacing:1px;text-transform:uppercase;
+  transition:border-color .3s,color .3s,box-shadow .3s;
+}
+.soc-link:hover{border-color:rgba(255,255,255,.4);color:var(--white);box-shadow:0 0 15px rgba(255,255,255,.04)}
+
+.contact-form{display:flex;flex-direction:column;gap:1.3rem}
+.fg{display:flex;flex-direction:column;gap:.45rem}
+.fg label{font-family:var(--font-mono);font-size:.63rem;letter-spacing:3px;text-transform:uppercase;color:var(--text2)}
+.fg input,.fg textarea{
+  background:rgba(255,255,255,.02);border:1px solid var(--border);
+  border-radius:2px;padding:.9rem 1.1rem;
+  color:var(--white);font-family:var(--font-body);font-size:.88rem;font-weight:500;
+  outline:none;transition:border-color .3s,box-shadow .3s;resize:none;
+}
+.fg input:focus,.fg textarea:focus{border-color:rgba(255,255,255,.4);box-shadow:0 0 20px rgba(255,255,255,.04)}
+.fg input::placeholder,.fg textarea::placeholder{color:var(--text2)}
+.fg textarea{min-height:130px}
+.btn-send{
+  align-self:flex-start;padding:.9rem 2.4rem;
+  border:1px solid rgba(255,255,255,.3);color:var(--white);background:transparent;
+  font-family:var(--font-body);font-weight:800;font-size:.85rem;letter-spacing:1px;
+  border-radius:2px;cursor:none;transition:background .3s,color .3s,box-shadow .3s;
+}
+.btn-send:hover{background:var(--white);color:var(--bg);box-shadow:0 0 30px rgba(255,255,255,.12)}
+
+/* ── FOOTER ── */
+footer{
+  border-top:1px solid var(--border);
+  padding:2.2rem 6vw;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;
+}
+.footer-logo{font-family:var(--font-mono);color:var(--white);text-decoration:none;font-size:.85rem;letter-spacing:1px}
+.footer-logo em{color:var(--text2);font-style:normal}
+.footer-copy{font-family:var(--font-mono);font-size:.62rem;color:var(--text2);letter-spacing:1px}
+.footer-nav{display:flex;gap:1.8rem;list-style:none}
+.footer-nav a{font-family:var(--font-mono);font-size:.62rem;letter-spacing:2px;text-transform:uppercase;color:var(--text2);text-decoration:none;transition:color .3s}
+.footer-nav a:hover{color:var(--white)}
+
+/* grid bg */
+body::after{
+  content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px);
+  background-size:70px 70px;
+}
+
+/* noise grain */
+body::before{
+  content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+  opacity:.025;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:200px 200px;
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:960px){
+  .about-grid{grid-template-columns:1fr;gap:3.5rem}
+  .contact-wrap{grid-template-columns:1fr;gap:3rem}
+  .nav-links,.nav-hire{display:none}
+  .ham{display:flex}
+  footer{flex-direction:column;text-align:center}
+  .footer-nav{justify-content:center}
+}
+@media(max-width:600px){
+  section{padding:5rem 5vw}
+  .hero-btns{flex-direction:column;align-items:center}
+  .proj-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="cur"></div>
+<div id="cur-ring"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#hero" class="logo">Wasiq<em>.dev</em></a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="nav-hire">Hire Me</a>
+  <button class="ham" id="ham" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mob-menu" id="mobMenu">
+  <a href="#about"    onclick="closeNav()">About</a>
+  <a href="#projects" onclick="closeNav()">Projects</a>
+  <a href="#contact"  onclick="closeNav()">Contact</a>
+  <a href="#contact"  onclick="closeNav()" style="color:var(--cyan)">Hire Me</a>
+</div>
+
+<!-- ══ HERO ══ -->
+<section id="hero">
+  <canvas id="hero-canvas"></canvas>
+
+  <!-- Orb shapes -->
+  <div class="orb" style="
+    --t:20s;--d:0s;
+    --r0:0deg;--r1:15deg;--r2:8deg;--r3:-5deg;
+    --x1:50px;--y1:-40px;--x2:-30px;--y2:60px;--x3:20px;--y3:-20px;
+    --s1:1.08;--s2:.94;--s3:1.03;
+    --b0:0px;--b1:3px;--b2:1px;--b3:4px;
+    width:110px;height:110px;top:12%;left:7%;
+    border:1px solid rgba(255,255,255,.18);
+    background:linear-gradient(135deg,rgba(255,255,255,.05),rgba(255,255,255,.01));
+    border-radius:4px;opacity:.6;
+  "></div>
+
+  <div class="orb" style="
+    --t:26s;--d:2s;
+    --r0:-10deg;--r1:20deg;--r2:-25deg;--r3:5deg;
+    --x1:-70px;--y1:30px;--x2:40px;--y2:-60px;--x3:-20px;--y3:40px;
+    --s1:1.12;--s2:.88;--s3:1.05;
+    --b0:4px;--b1:0px;--b2:6px;--b3:2px;
+    width:160px;height:160px;top:6%;right:8%;
+    border:1px solid rgba(255,255,255,.1);
+    border-radius:50%;
+    background:radial-gradient(circle at 40%,rgba(255,255,255,.04),transparent);
+    opacity:.5;
+  "></div>
+
+  <div class="orb" style="
+    --t:32s;--d:4s;
+    --r0:30deg;--r1:60deg;--r2:20deg;--r3:45deg;
+    --x1:40px;--y1:70px;--x2:-60px;--y2:-30px;--x3:20px;--y3:50px;
+    --s1:.9;--s2:1.1;--s3:.95;
+    --b0:6px;--b1:2px;--b2:8px;--b3:3px;
+    width:70px;height:70px;bottom:22%;left:10%;
+    border:1px solid rgba(255,255,255,.14);
+    background:linear-gradient(45deg,rgba(255,255,255,.04),transparent);
+    opacity:.5;
+  "></div>
+
+  <div class="orb" style="
+    --t:18s;--d:1s;
+    --r0:-45deg;--r1:-20deg;--r2:-60deg;--r3:-35deg;
+    --x1:-30px;--y1:-50px;--x2:50px;--y2:30px;--x3:-40px;--y3:-10px;
+    --s1:1.06;--s2:.96;--s3:1.02;
+    --b0:2px;--b1:5px;--b2:0px;--b3:3px;
+    width:200px;height:200px;bottom:15%;right:6%;
+    border:1px solid rgba(255,255,255,.07);
+    border-radius:50%;
+    background:radial-gradient(circle,rgba(255,255,255,.03),transparent);
+    opacity:.4;
+  "></div>
+
+  <div class="orb" style="
+    --t:24s;--d:3s;
+    --r0:10deg;--r1:30deg;--r2:5deg;--r3:20deg;
+    --x1:60px;--y1:-20px;--x2:-40px;--y2:40px;--x3:30px;--y3:-30px;
+    --s1:1.15;--s2:.85;--s3:1.08;
+    --b0:8px;--b1:2px;--b2:10px;--b3:5px;
+    width:50px;height:50px;top:40%;left:3%;
+    border:1px solid rgba(255,255,255,.22);
+    background:rgba(255,255,255,.03);
+    border-radius:2px;
+    opacity:.55;
+  "></div>
+
+  <div class="orb" style="
+    --t:28s;--d:.5s;
+    --r0:0deg;--r1:-15deg;--r2:25deg;--r3:-5deg;
+    --x1:-50px;--y1:30px;--x2:30px;--y2:-40px;--x3:-20px;--y3:20px;
+    --s1:.92;--s2:1.08;--s3:.97;
+    --b0:5px;--b1:0px;--b2:7px;--b3:2px;
+    width:90px;height:90px;top:55%;right:4%;
+    border:1px solid rgba(255,255,255,.1);
+    border-radius:50%;
+    background:radial-gradient(circle,rgba(255,255,255,.03),transparent);
+    opacity:.45;
+  "></div>
+
+  <!-- CSS Cube 1 -->
+  <div class="css-cube" style="
+    --sz:80px;--t:14s;--d:0s;
+    --dt:22s;--dd:1s;
+    --dy:-40px;--dx:30px;
+    top:25%;left:18%;
+  ">
+    <div class="face" style="border-color:rgba(255,255,255,.18);transform:translateZ(40px)"></div>
+    <div class="face" style="border-color:rgba(255,255,255,.12);transform:translateZ(-40px)"></div>
+    <div class="face" style="border-color:rgba(255,255,255,.1);transform:rotateY(90deg) translateZ(40px)"></div>
+    <div class="face" style="border-color:rgba(255,255,255,.1);transform:rotateY(-90deg) translateZ(40px)"></div>
+    <div class="face" style="border-color:rgba(255,255,255,.08);transform:rotateX(90deg) translateZ(40px)"></div>
+    <div class="face" style="border-color:rgba(255,255,255,.08);transform:rotateX(-90deg) translateZ(40px)"></div>
+  </div>
+
+  <!-- CSS Cube 2 -->
+  <div class="css-cube" style="
+    --sz:50px;--t:20s;--d:5s;
+    --dt:28s;--dd:2s;
+    --dy:50px;--dx:-40px;
+    top:20%;right:22%;
+  ">
+    <div class="face" style="border-color:rgba(255,255,255,.14);transform:translateZ(25px)"></div>
+    <div class="face" style="border-color:rgba(255,255,255,.1);transform:translateZ(-25px)"></div>
+    <div class="face" style="border-color:rgba(255,255,255,.08);transform:rotateY(90deg) translateZ(25px)"></div>
+    <div class="face" style="border-color:rgba(255,255,255,.08);transform:rotateY(-90deg) translateZ(25px)"></div>
+    <div class="face" style="border-color:rgba(255,255,255,.06);transform:rotateX(90deg) translateZ(25px)"></div>
+    <div class="face" style="border-color:rgba(255,255,255,.06);transform:rotateX(-90deg) translateZ(25px)"></div>
+  </div>
+
+  <!-- Hero text — CENTERED -->
+  <div class="hero-center">
+    <p class="hero-tag">// available for hire</p>
+    <h1 class="hero-h1">
+      Hi, I'm <span class="c1">Wasiq</span><br>
+      <span class="c2">Web</span> Developer
+    </h1>
+    <p class="hero-sub">
+      I craft immersive digital experiences with clean <strong>HTML</strong>,
+      expressive <strong>CSS</strong>, and dynamic <strong>JavaScript</strong> —
+      turning ideas into performant, pixel-perfect interfaces.
+    </p>
+    <div class="hero-btns">
+      <a href="#projects" class="btn-p">View My Work</a>
+      <a href="#contact" class="btn-g">Get In Touch</a>
+    </div>
+  </div>
+
+  <div class="scroll-cue">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ══ ABOUT ══ -->
+<section id="about">
+  <div class="about-grid">
+
+    <div class="photo-wrap rev">
+      <div class="photo-card" id="photoCard">
+        <div class="photo-img">
+          <svg class="photo-icon" width="64" height="64" viewBox="0 0 64 64" fill="none">
+            <circle cx="32" cy="24" r="12" stroke="rgba(0,245,255,0.4)" stroke-width="1.5"/>
+            <path d="M8 56c0-13.255 10.745-24 24-24s24 10.745 24 24" stroke="rgba(0,245,255,0.4)" stroke-width="1.5"/>
+          </svg>
+          <p>Your Photo Here</p>
+        </div>
+        <div class="photo-corner"></div>
+      </div>
+    </div>
+
+    <div class="about-text">
+      <p class="sec-label rev">// about me</p>
+      <h2 class="sec-title rev"><span>Crafting</span> the Web,<br>One Pixel at a Time</h2>
+      <div class="bar rev"></div>
+      <p class="about-bio rev">
+        I'm a <strong>front-end web developer</strong> with a passion for building beautiful, 
+        functional, and accessible digital products. My expertise lives at the intersection 
+        of <strong>creative design</strong> and <strong>clean engineering</strong> — I believe 
+        great code is art.<br><br>
+        From responsive layouts to complex animations, I specialise in transforming 
+        design concepts into reality using <strong>HTML</strong>, <strong>CSS</strong>, 
+        and <strong>JavaScript</strong>. Every project is an opportunity to push 
+        the craft forward.
+      </p>
+
+      <p class="skills-head rev">Core Skills</p>
+      <div class="skills">
+        <div class="skill rev rev-d1">
+          <div class="skill-top">
+            <span class="skill-name">HTML5</span>
+            <span class="skill-pct">95%</span>
+          </div>
+          <div class="skill-track"><div class="skill-fill" data-w="95"></div></div>
+        </div>
+        <div class="skill rev rev-d2">
+          <div class="skill-top">
+            <span class="skill-name">CSS3 &amp; Animations</span>
+            <span class="skill-pct">92%</span>
+          </div>
+          <div class="skill-track"><div class="skill-fill" data-w="92"></div></div>
+        </div>
+        <div class="skill rev rev-d3">
+          <div class="skill-top">
+            <span class="skill-name">JavaScript (ES6+)</span>
+            <span class="skill-pct">88%</span>
+          </div>
+          <div class="skill-track"><div class="skill-fill" data-w="88"></div></div>
+        </div>
+        <div class="skill rev rev-d4">
+          <div class="skill-top">
+            <span class="skill-name">Responsive Design</span>
+            <span class="skill-pct">96%</span>
+          </div>
+          <div class="skill-track"><div class="skill-fill" data-w="96"></div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ PROJECTS ══ -->
+<section id="projects">
+  <p class="sec-label rev">// my work</p>
+  <h2 class="sec-title rev">Selected <span>Projects</span></h2>
+  <div class="bar rev"></div>
+
+  <div class="proj-grid">
+
+    <div class="proj-card rev rev-d1">
+      <div class="proj-thumb pt1">
+        <div class="proj-icon-wrap">🌐</div>
+      </div>
+      <div class="proj-body">
+        <p class="proj-tag">UI / Frontend</p>
+        <h3 class="proj-title">NovaDash — Analytics UI</h3>
+        <div class="proj-tech">
+          <span class="tech-tag">HTML</span>
+          <span class="tech-tag">CSS Grid</span>
+          <span class="tech-tag">JS</span>
+          <span class="tech-tag">Chart.js</span>
+        </div>
+        <p class="proj-desc">A real-time analytics dashboard with animated data visualisations, dark glassmorphism cards, and live-updating KPI widgets.</p>
+        <div class="proj-links">
+          <a href="#">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Live Demo
+          </a>
+          <a href="#">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+            GitHub
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="proj-card rev rev-d2">
+      <div class="proj-thumb pt2">
+        <div class="proj-icon-wrap">✦</div>
+      </div>
+      <div class="proj-body">
+        <p class="proj-tag">Animation / CSS Art</p>
+        <h3 class="proj-title">Lumina — CSS Art Gallery</h3>
+        <div class="proj-tech">
+          <span class="tech-tag">CSS Animations</span>
+          <span class="tech-tag">HTML Canvas</span>
+          <span class="tech-tag">Vanilla JS</span>
+        </div>
+        <p class="proj-desc">An interactive CSS art gallery featuring pure-CSS illustrations, keyframe animations, and scroll-driven storytelling without a single image file.</p>
+        <div class="proj-links">
+          <a href="#">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Live Demo
+          </a>
+          <a href="#">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+            GitHub
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="proj-card rev rev-d3">
+      <div class="proj-thumb pt3">
+        <div class="proj-icon-wrap">⚡</div>
+      </div>
+      <div class="proj-body">
+        <p class="proj-tag">Web App / JavaScript</p>
+        <h3 class="proj-title">Forge — Task Manager App</h3>
+        <div class="proj-tech">
+          <span class="tech-tag">HTML5</span>
+          <span class="tech-tag">CSS Custom Props</span>
+          <span class="tech-tag">Vanilla JS</span>
+          <span class="tech-tag">LocalStorage</span>
+        </div>
+        <p class="proj-desc">A zero-dependency task management app with drag-and-drop boards, offline persistence, smooth micro-animations, and full keyboard accessibility.</p>
+        <div class="proj-links">
+          <a href="#">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Live Demo
+          </a>
+          <a href="#">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+            GitHub
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ CONTACT ══ -->
+<section id="contact">
+  <div class="contact-orbs" id="contactOrbs"></div>
+  <div class="contact-wrap">
+
+    <div>
+      <p class="sec-label rev">// contact</p>
+      <h2 class="sec-title rev">Let's Build<br><span>Something</span></h2>
+      <div class="bar rev"></div>
+      <p class="contact-info rev">
+        Got a project in mind? Looking for a developer to join your team? 
+        I'm currently open to freelance work and full-time opportunities. 
+        Let's make something great together.
+      </p>
+      <div class="contact-detail rev">
+        <div class="detail-row"><span>📍</span> Available Worldwide (Remote)</div>
+        <div class="detail-row"><span>📧</span> Mohamed Wasiq@Mohamed Wasiqdev.io</div>
+        <div class="detail-row"><span>⏱</span> Usually responds within 24h</div>
+      </div>
+      <div class="socials rev">
+        <a href="#" class="soc-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22"/></svg>
+          GitHub
+        </a>
+        <a href="#" class="soc-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+          Instagram
+        </a>
+        <!-- <a href="#" class="soc-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/></svg>
+          
+        </a>
+        <a href="MWasiq_visuals" class="soc-link">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><polyline points="8 21 12 17 16 21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          Instagram
+        </a> -->
+      </div>
+    </div>
+
+    <div class="contact-form rev rev-d2">
+      <div class="fg">
+        <label>Your Name</label>
+        <input type="text" placeholder="John Smith"/>
+      </div>
+      <div class="fg">
+        <label>Email Address</label>
+        <input type="email" placeholder="john@example.com"/>
+      </div>
+      <div class="fg">
+        <label>Message</label>
+        <textarea placeholder="Tell me about your project..."></textarea>
+      </div>
+      <button class="btn-send">Send Message →</button>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <a href="#hero" class="footer-logo">Mohamed Wasiq<em>.dev</em></a>
+  <p class="footer-copy">© 2025 Mohamed Wasiq. Crafted with HTML, CSS &amp; JS.</p>
+  <ul class="footer-nav">
+    <li><a href="#about">About</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</footer>
+
+<script>
+// ── CURSOR ──
+const cur = document.getElementById('cur');
+const ring = document.getElementById('cur-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+(function animRing(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing);})();
+document.querySelectorAll('a,button,.proj-card,.photo-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{ring.style.width='60px';ring.style.height='60px';ring.style.borderColor='rgba(0,245,255,.7)';});
+  el.addEventListener('mouseleave',()=>{ring.style.width='32px';ring.style.height='32px';ring.style.borderColor='rgba(0,245,255,.4)';});
+});
+
+// ── NAV GLASS ──
+const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>{
+  nav.classList.toggle('glass',window.scrollY>60);
+});
+
+// ── HAMBURGER ──
+const ham=document.getElementById('ham');
+const mob=document.getElementById('mobMenu');
+ham.addEventListener('click',()=>{ham.classList.toggle('open');mob.classList.toggle('open');});
+function closeNav(){ham.classList.remove('open');mob.classList.remove('open');}
+
+// ── CANVAS HERO ── star field + scan line
+const canvas=document.getElementById('hero-canvas');
+const ctx=canvas.getContext('2d');
+let W,H,stars=[];
+function initCanvas(){
+  W=canvas.width=window.innerWidth;
+  H=canvas.height=window.innerHeight;
+  stars=Array.from({length:120},()=>({
+    x:Math.random()*W,y:Math.random()*H,
+    r:Math.random()*.8+.2,
+    sp:Math.random()*.15+.03,
+    op:Math.random()*.5+.1,
+    twk:Math.random()*Math.PI*2
+  }));
+}
+initCanvas();
+window.addEventListener('resize',initCanvas);
+
+let scanY=0;
+function drawCanvas(t){
+  ctx.clearRect(0,0,W,H);
+
+  // stars
+  stars.forEach(s=>{
+    s.twk+=.008;
+    const op=s.op*(0.6+0.4*Math.sin(s.twk));
+    ctx.beginPath();
+    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(0,245,255,${op})`;
+    ctx.fill();
+    s.y-=s.sp;
+    if(s.y<0){s.y=H;s.x=Math.random()*W;}
+  });
+
+  // scan line
+  scanY=(scanY+.6)%H;
+  const grad=ctx.createLinearGradient(0,scanY-40,0,scanY+40);
+  grad.addColorStop(0,'rgba(0,245,255,0)');
+  grad.addColorStop(.5,'rgba(0,245,255,0.025)');
+  grad.addColorStop(1,'rgba(0,245,255,0)');
+  ctx.fillStyle=grad;
+  ctx.fillRect(0,scanY-40,W,80);
+
+  requestAnimationFrame(drawCanvas);
+}
+drawCanvas(0);
+
+// ── PHOTO CARD TILT ──
+const pc=document.getElementById('photoCard');
+if(pc){
+  pc.parentElement.addEventListener('mousemove',e=>{
+    const r=pc.parentElement.getBoundingClientRect();
+    const x=(e.clientX-r.left)/r.width-.5;
+    const y=(e.clientY-r.top)/r.height-.5;
+    pc.style.transform=`rotateY(${x*18}deg) rotateX(${-y*18}deg) translateZ(10px)`;
+  });
+  pc.parentElement.addEventListener('mouseleave',()=>{pc.style.transform='';});
+}
+
+// ── REVEAL ON SCROLL ──
+const revEls=document.querySelectorAll('.rev');
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('in');
+      // skill bars
+      e.target.querySelectorAll('.skill-fill').forEach(f=>{
+        f.style.width=f.dataset.w+'%';
+      });
+    }
+  });
+},{threshold:.15});
+revEls.forEach(el=>obs.observe(el));
+
+// trigger skill bars that are already visible
+document.querySelectorAll('.skill-fill').forEach(f=>{
+  const rect=f.getBoundingClientRect();
+  if(rect.top<window.innerHeight){f.style.width=f.dataset.w+'%';}
+});
+
+// ── CONTACT FLOATING ORBS ──
+const cOrbs=document.getElementById('contactOrbs');
+for(let i=0;i<4;i++){
+  const d=document.createElement('div');
+  const sz=80+Math.random()*120;
+  d.style.cssText=`
+    position:absolute;border-radius:50%;pointer-events:none;
+    width:${sz}px;height:${sz}px;
+    border:1px solid rgba(0,245,255,${.04+Math.random()*.06});
+    background:radial-gradient(circle,rgba(0,245,255,${.015+Math.random()*.02}),transparent);
+    top:${10+Math.random()*80}%;left:${Math.random()*100}%;
+    animation:drift ${18+Math.random()*14}s ${Math.random()*5}s ease-in-out infinite;
+    --t:${18+Math.random()*14}s;--d:${Math.random()*5}s;
+    --r0:0deg;--r1:${Math.random()*30}deg;--r2:${-Math.random()*20}deg;--r3:${Math.random()*15}deg;
+    --x1:${-40+Math.random()*80}px;--y1:${-40+Math.random()*80}px;
+    --x2:${-40+Math.random()*80}px;--y2:${-40+Math.random()*80}px;
+    --x3:${-40+Math.random()*80}px;--y3:${-40+Math.random()*80}px;
+    --s1:${.9+Math.random()*.2};--s2:${.88+Math.random()*.24};--s3:${.92+Math.random()*.16};
+    --b0:${Math.random()*6}px;--b1:${Math.random()*4}px;--b2:${Math.random()*8}px;--b3:${Math.random()*5}px;
+    opacity:.5;
+  `;
+  cOrbs.appendChild(d);
+}
+</script>
+</body>
+</html>
